@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +21,7 @@ import java.io.PrintWriter;
  */
 @WebServlet(description = "Mysql", urlPatterns = {"/q2", "/MysqlServlet.do2"})
 public class Mysql extends HttpServlet {
+    private String mutex = "";
     static DBFactory dbFactory;
     static Cache cache;
     static boolean isEnable = false;
@@ -46,28 +46,29 @@ public class Mysql extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         if (userid == null || userid.length() != 10 || tweet_time == null || tweet_time.length() != 19) {
-            PrintWriter Webout = response.getWriter();
             try {
-                Webout.println("");
+                response.getWriter().println("");
             } catch (Exception e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             return;
         }
-        PrintWriter Webout = response.getWriter();
-        String[] temp = tweet_time.split(" ");
-        String timeStamp = temp[0] + "+" + temp[1];
-        String key = userid + ":" + timeStamp;
-        //if there is no hit in the cache get the data from mysql
-        if (!cache.getQ2Map().containsKey(key)) {
-            Tweets tweets = dbFactory.getTweets(userid, timeStamp);
-            Webout.println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
-            Webout.print(tweets);
-            cache.getQ2Map().put(key, tweets);
-        } else {//if there is a hit, get the data from cache
-            Webout.println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
-            Webout.print(cache.getQ2Map().get(key));
+        synchronized (mutex) {
+            String[] temp = tweet_time.split(" ");
+            String timeStamp = temp[0] + "+" + temp[1];
+            String key = userid + ":" + timeStamp;      
+            //if there is no hit in the cache get the data from mysql
+            if (!cache.getQ2Map().containsKey(key)) {
+                Tweets tweets = dbFactory.getTweets(userid, timeStamp);
+                response.getWriter().println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
+                response.getWriter().print(tweets);
+                cache.getQ2Map().put(key, tweets);
+            } else {//if there is a hit, get the data from cache
+                response.getWriter().println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
+                response.getWriter().print(cache.getQ2Map().get(key));
+            }
         }
+        
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
