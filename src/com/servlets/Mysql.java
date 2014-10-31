@@ -45,7 +45,7 @@ public class Mysql extends HttpServlet {
         //set data type for return
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-        if (userid == null || userid.length() == 0 || tweet_time == null || tweet_time.length() == 0) {
+        if (userid == null || userid.length() != 10 || tweet_time == null || tweet_time.length() != 19) {
             PrintWriter Webout = response.getWriter();
             try {
                 Webout.println("");
@@ -56,11 +56,11 @@ public class Mysql extends HttpServlet {
         }
         PrintWriter Webout = response.getWriter();
         String[] temp = tweet_time.split(" ");
-        tweet_time = temp[0] + "+" + temp[1];
-        String key = userid + ":" + tweet_time;
+        String timeStamp = temp[0] + "+" + temp[1];
+        String key = userid + ":" + timeStamp;
         //if there is no hit in the cache get the data from mysql
         if (!cache.getQ2Map().containsKey(key)) {
-            Tweets tweets = dbFactory.getTweets(userid, tweet_time);
+            Tweets tweets = dbFactory.getTweets(userid, timeStamp);
             Webout.println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
             Webout.print(tweets);
             cache.getQ2Map().put(key, tweets);
