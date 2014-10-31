@@ -1,0 +1,7 @@
+<web-app>
+    <servlet>
+        <servlet-name>TwitterDataAnalytics</servlet-name>
+        <servlet-class>com.servlets.Mysql</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+</web-app>
