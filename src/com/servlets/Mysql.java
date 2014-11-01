@@ -53,18 +53,17 @@ public class Mysql extends HttpServlet {
             }
             return;
         }
+        response.getWriter().println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
         synchronized (mutex) {
             String[] temp = tweet_time.split(" ");
             String timeStamp = temp[0] + "+" + temp[1];
             String key = userid + ":" + timeStamp;      
             //if there is no hit in the cache get the data from mysql
             if (!cache.getQ2Map().containsKey(key)) {
-                Tweets tweets = dbFactory.getTweets(userid, timeStamp);
-                response.getWriter().println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
+                Tweets tweets = dbFactory.getTweets(userid, timeStamp);               
                 response.getWriter().print(tweets);
                 cache.getQ2Map().put(key, tweets);
             } else {//if there is a hit, get the data from cache
-                response.getWriter().println("LLW,2484-1862-6762,3207-8060-5305, 4820-9017-1878");
                 response.getWriter().print(cache.getQ2Map().get(key));
             }
         }
@@ -74,6 +73,5 @@ public class Mysql extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
-
 
 }
